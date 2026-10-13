@@ -1,0 +1,682 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chihiro en diez semanas</title>
+<meta name="description" content="Actividad interactiva: eres escenógrafo de El viaje de Chihiro y aprendes los conceptos de escenografía teatral mientras construyes tu maqueta.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: taller en dos columnas. Izquierda: tu maqueta viva (fija en escritorio). Derecha: la escena actual (ficha para aprender + retos). Estética de Chihiro: noche azul profunda, rojo laca de la casa de baños y luz dorada de faroles, con líneas suaves como agua. */
+:root{
+  color-scheme: dark;
+  --bg:#0a1122; --stage:#111a30; --panel:#16213d; --line:#2a3a62;
+  --glow-1:rgba(226,90,50,.22); --glow-2:rgba(60,170,190,.16); --grid:rgba(150,190,255,.06);
+  --fg:#f5efe4; --muted:#bfc6da; --faint:#8590ad;
+  --accent:#f2b84b; --accent-ink:#1c1102; --gold:#f2b84b; --red:#e2483a; --teal:#4fc1c9;
+  --ok:#7cc59a; --bad:#e3796c;
+  --b1:#e2483a; --b2:#f2b84b; --b3:#4fc1c9; --b4:#a99bf0; --b5:#6ea8ff;
+  --curtain:#8f2620; --curtain-2:#5e1712; --wood:#4a3a2b; --wood-2:#5d4834; --frame:#8a6b3a;
+  --cal:#eee7d8; --tierra:#8a5a3a; --olivo:#6f7a3c; --sangre:#8e1f22;
+  --f-display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--fg)}
+body{background:
+  radial-gradient(60vmax 40vmax at 100% 0%,var(--glow-1),transparent 60%),
+  radial-gradient(60vmax 45vmax at 0% 100%,var(--glow-2),transparent 60%),
+  repeating-radial-gradient(circle at 50% 120%,transparent 0 22px,var(--grid) 22px 23px,transparent 23px 34px),
+  var(--bg);background-attachment:fixed}
+.topbar::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,var(--red),var(--gold),var(--teal));box-shadow:0 0 10px var(--gold)}
+.intro h1 span,.brand span{text-shadow:0 0 18px color-mix(in srgb,var(--accent) 70%,transparent)}
+body{font-family:var(--f-body);font-size:17px;line-height:1.5;padding-inline:16px;padding-block:0 48px}
+.wrap{max-width:1180px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);font-weight:800;line-height:1.02;letter-spacing:.01em;text-wrap:balance;margin:0}
+p{margin:0}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+.eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.muted{color:var(--muted)}
+.btn{border:0;border-radius:10px;padding:12px 18px;font-weight:700;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* ---------- Top bar ---------- */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);padding-block:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.brand{font-family:var(--f-display);font-weight:800;font-size:20px;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
+.brand span{color:var(--accent)}
+.steps{display:flex;gap:5px;flex:1 1 220px;min-width:0}
+.steps button{flex:1;min-width:0;height:8px;border-radius:99px;border:0;background:var(--line);padding:0}
+.steps button.done{background:var(--c)}
+.steps button.cur{outline:2px solid var(--fg);outline-offset:2px}
+.steps button:disabled{cursor:default}
+.tb-right{display:flex;gap:8px;align-items:center}
+.score{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:13.5px;border:1px solid var(--line);padding:6px 12px;border-radius:999px;background:var(--stage);white-space:nowrap}
+.score b{color:var(--accent)}
+.nb{background:var(--panel);border:1px solid var(--accent);color:var(--fg);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:700;white-space:nowrap}
+
+/* ---------- Intro ---------- */
+.intro{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:center;padding-block:40px}
+@media (max-width:820px){.intro{grid-template-columns:1fr;gap:22px;padding-block:28px}}
+.intro h1{font-size:clamp(48px,9vw,96px);text-transform:uppercase}
+.intro h1 span{color:var(--accent)}
+.intro .lead{font-size:19px;color:var(--muted);max-width:46ch;margin-top:14px}
+.howto{display:grid;gap:10px;margin-top:20px;padding:0;list-style:none}
+.howto li{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start}
+.howto li span{font-family:var(--f-mono);color:var(--accent)}
+.name{display:grid;gap:6px;margin-top:22px;max-width:380px}
+.name label{font-size:13px;color:var(--muted)}
+.name input{background:var(--stage);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+.intro .go{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
+.credits{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--faint);display:grid;gap:4px}
+
+/* ---------- Workshop ---------- */
+.shop{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:28px;align-items:start;padding-top:22px}
+@media (max-width:860px){.shop{grid-template-columns:1fr;gap:18px}}
+.model{position:sticky;top:calc(env(safe-area-inset-top,0px) + 70px);display:grid;gap:10px}
+@media (max-width:860px){.model{position:static}}
+.model .box{background:var(--stage);border:1px solid var(--line);border-radius:14px;padding:10px}
+.model svg{display:block;width:100%;height:auto}
+.model h3{font-size:18px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.ficha-tec{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:14px;color:var(--muted)}
+.ficha-tec li{display:grid;grid-template-columns:14px 1fr;gap:6px}
+.ficha-tec li::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--accent);margin-top:7px}
+@media (max-width:860px){.ficha-tec{display:none}}
+
+.scene-head{display:grid;gap:8px}
+.scene-head .eyebrow{color:var(--c)}
+.scene-head h2{font-size:clamp(38px,6vw,58px);text-transform:uppercase}
+.scene-head p{color:var(--muted);max-width:60ch;font-size:18px}
+.brief{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:10px;padding:14px 16px;font-size:16.5px}
+.brief b{color:var(--c)}
+
+.sec-label{margin-top:26px;margin-bottom:10px;display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:800;font-size:22px;text-transform:uppercase;letter-spacing:.04em}
+.sec-label::after{content:"";flex:1;height:1px;background:var(--line)}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.cards{grid-template-columns:1fr}}
+.cc{background:var(--stage);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:6px;align-content:start}
+.cc h4{margin:0;font-size:17px;color:var(--c)}
+.cc p{font-size:15.5px;color:var(--fg)}
+.cc .ex{font-size:14px;color:var(--muted);font-style:italic}
+.spectrum{grid-column:1/-1;display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted);border-top:2px solid var(--c);padding-top:6px}
+.readbtn{margin-top:14px;display:flex;justify-content:flex-end}
+
+.task{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:14px;margin-top:12px}
+.task .q{font-size:19.5px;font-weight:700;line-height:1.35}
+.task .hint{font-size:14.5px;color:var(--muted)}
+.tag{justify-self:start;font-family:var(--f-mono);font-size:12px;color:var(--faint)}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;background:var(--stage);border:1px solid var(--line);border-radius:10px;padding:11px 14px;line-height:1.35}
+.opt:hover:not(:disabled){border-color:var(--muted)}
+.opt:disabled{cursor:default}
+.opt.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--stage))}
+.right{border-color:var(--ok)!important;background:color-mix(in srgb,var(--ok) 13%,var(--stage))!important}
+.wrong{border-color:var(--bad)!important;background:color-mix(in srgb,var(--bad) 13%,var(--stage))!important}
+.mrow{display:grid;gap:8px;background:var(--stage);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.mrow .it{display:flex;gap:10px;align-items:center;font-weight:700;line-height:1.35}
+.sw{width:26px;height:26px;border-radius:6px;flex:none;border:1px solid rgba(255,255,255,.2)}
+.num-badge{width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:14px;flex:none}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chipb{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14.5px}
+.chipb.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 18%,var(--panel))}
+.chipb:disabled{cursor:default}
+.mrow select{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px}
+.fix{font-size:14px;color:var(--muted)}
+.fix b{color:var(--ok)}
+.fb{border-left:3px solid var(--ok);padding:4px 0 4px 12px}
+.fb.no{border-left-color:var(--bad)}
+.fb b{display:block}
+.row-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;align-items:center}
+.counter{font-family:var(--f-mono);font-size:13px;color:var(--faint)}
+.inrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.inrow input{width:110px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:9px 10px;font-family:var(--f-mono)}
+.inrow .unit{font-family:var(--f-mono);color:var(--muted)}
+.inrow .btn{padding:9px 14px}
+.formula{font-family:var(--f-mono);font-size:14.5px;background:var(--stage);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:grid;gap:3px}
+.svgbox{background:var(--stage);border:1px solid var(--line);border-radius:12px;padding:6px}
+.svgbox svg{display:block;width:100%;height:auto}
+
+.unlock{margin-top:18px;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 16%,var(--panel)),var(--panel));border:1px solid var(--c);border-radius:14px;padding:18px;display:grid;gap:12px}
+.unlock h3{font-size:26px;text-transform:uppercase}
+.unlock .chips span{background:var(--stage);border:1px solid var(--c);border-radius:999px;padding:4px 12px;font-size:14px}
+
+/* ---------- Notebook overlay ---------- */
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(8,7,6,.72);display:flex;justify-content:flex-end}
+.drawer{width:min(520px,100%);height:100%;overflow-y:auto;background:var(--bg);border-left:1px solid var(--line);padding:calc(env(safe-area-inset-top,0px) + 18px) 18px calc(env(safe-area-inset-bottom,0px) + 30px);display:grid;gap:14px;align-content:start}
+.drawer header{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.drawer h2{font-size:34px;text-transform:uppercase}
+.nb-group h3{font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:var(--c);margin-bottom:8px}
+.nb-list{display:grid;gap:6px}
+.nb-item{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px}
+.nb-item b{display:block;color:var(--fg)}
+.nb-item.locked{color:var(--faint);border-style:dashed;background:transparent}
+
+/* ---------- Premiere ---------- */
+.premiere{padding-top:26px;display:grid;gap:22px}
+.theatre{position:relative;overflow:hidden;border-radius:14px;border:1px solid var(--line);background:var(--stage)}
+.theatre svg{display:block;width:100%;height:auto}
+.theatre .cl,.theatre .cr{position:absolute;top:0;bottom:0;width:50.5%;background:repeating-linear-gradient(90deg,var(--curtain-2) 0 18px,var(--curtain) 18px 36px);transition:transform 1.8s cubic-bezier(.6,.05,.3,1) .3s}
+.theatre .cl{left:0}.theatre .cr{right:0}
+.theatre.open .cl{transform:translateX(-96%)}.theatre.open .cr{transform:translateX(96%)}
+blockquote{margin:0;font-family:var(--f-display);font-weight:600;font-size:clamp(26px,4.4vw,40px);line-height:1.1;text-wrap:balance}
+blockquote cite{display:block;margin-top:8px;font-family:var(--f-body);font-size:15px;font-style:normal;color:var(--muted)}
+.ticket{background:var(--fg);color:#1d0b26;border-radius:16px;padding:24px;display:grid;gap:14px;
+  -webkit-mask:radial-gradient(circle 14px at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 14px at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;
+          mask:radial-gradient(circle 14px at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 14px at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat}
+.ticket .eyebrow{color:#a3281f}
+.ticket h2{font-size:clamp(32px,6vw,50px);text-transform:uppercase}
+.ticket table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:15px}
+.ticket td{padding:6px 0;border-bottom:1px dashed #b9ab93}
+.ticket td:last-child{text-align:right;font-family:var(--f-mono)}
+.ticket .total td{font-weight:700;border-bottom:0;font-size:18px}
+.ticket .who{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
+.ticket .stamp{justify-self:end;font-family:var(--f-display);font-weight:800;font-size:22px;letter-spacing:.08em;text-transform:uppercase;color:#a3281f;border:3px solid #a3281f;border-radius:8px;padding:2px 12px;transform:rotate(-4deg)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap" id="app"></div>
+<div id="ov"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ================= Conceptos del cuaderno ================= */
+const BLOCKS={1:{n:"¿Qué es la escenografía?",c:"var(--b1)"},2:{n:"Tipos de escenografía",c:"var(--b2)"},3:{n:"Elementos de la escenografía",c:"var(--b3)"},4:{n:"El escenógrafo y su proceso",c:"var(--b4)"},5:{n:"Dibujo escénico y técnica",c:"var(--b5)"}};
+const C={
+  esc:{b:1,t:"Escenografía",d:"El espacio de la obra, creado según la lectura de dirección. Construye el mundo de la obra."},
+  origen:{b:1,t:"Origen del término",d:"Viene de la pintura de escenas y del dibujo en perspectiva."},
+  kin:{b:1,t:"De mirar a habitar",d:"En el siglo XX pasa de fondo pintado a espacio que se recorre y se toca."},
+  hab:{b:1,t:"Habitabilidad (Mendes Ribeiro)",d:"Espacios con los que el cuerpo de quien actúa interactúa."},
+  svo:{b:1,t:"Josef Svoboda",d:"«La escenografía es lo que sucede cuando se abre el telón»."},
+  fun:{b:1,t:"Cuatro funciones",d:"Sitúa, comunica, resuelve y transforma."},
+  desg:{b:4,t:"Desglose",d:"Lista de lo que pide la obra: lugares, entradas, objetos y cambios."},
+  junta:{b:4,t:"Junta con dirección",d:"Preguntar y llevar referencias antes de proponer."},
+  trad:{b:4,t:"Traducir una idea",d:"Convertir una idea en decisiones de proporción, color y circulación."},
+  idoc:{b:4,t:"Investigación documental",d:"Cómo era ese mundo: arquitectura, texturas, época."},
+  iemo:{b:4,t:"Investigación emocional",d:"Imágenes no literales que transmiten el concepto."},
+  paleta:{b:4,t:"Paleta con razones",d:"Cada color se justifica desde la obra."},
+  t_real:{b:2,t:"Realista",d:"Fiel y llena de detalles."},
+  t_nat:{b:2,t:"Naturalista",d:"Como la vida misma, tras una cuarta pared."},
+  t_pint:{b:2,t:"Pintada",d:"Telones y paneles pintados de frente."},
+  t_rom:{b:2,t:"Romántica",d:"Lúgubre: ruinas, noche, luna."},
+  t_fun:{b:2,t:"Funcional",d:"Plataformas y escaleras para moverse."},
+  t_sug:{b:2,t:"Sugerente",d:"Un objeto cargado de sentido lo dice todo."},
+  t_min:{b:2,t:"Minimalista",d:"Lo mínimo indispensable."},
+  t_abs:{b:2,t:"Abstracta",d:"Formas, color y luz sin lugar ni tiempo."},
+  deco:{b:3,t:"Decorado",d:"Lo que forma el espacio: fijo (muros) o móvil (telones, carros)."},
+  util:{b:3,t:"Utilería",d:"Objetos que el actor usa. Literal o simbólica."},
+  ilum:{b:3,t:"Iluminación",d:"Crea atmósfera y guía la mirada."},
+  vest:{b:3,t:"Vestuario y maquillaje",d:"Muestran quién es el personaje y cómo cambia."},
+  arte:{b:3,t:"Arte escénico",d:"Pintura y texturas. Trampantojo: profundidad pintada en lo plano."},
+  tecn:{b:3,t:"Piezas técnicas",d:"Tramoya, soportes, plataformas, tarimas, carros y bastidores."},
+  bast:{b:3,t:"Bastidor",d:"Marco forrado que forma muros; también la zona oculta tras el escenario."},
+  boceto:{b:4,t:"Boceto",d:"Dibujo a mano alzada para explorar el espacio."},
+  maq:{b:4,t:"Maqueta",d:"El escenario en 3D con figura humana. Escalas 1:25 y 1:50."},
+  presu:{b:4,t:"Presupuesto",d:"Conservar lo que sostiene el concepto y simplificar lo demás."},
+  planos:{b:5,t:"Juego de planos",d:"Planta, plano compuesto, sección y alzados. Si no está en el plano, no existe."},
+  italiana:{b:5,t:"Teatro a la italiana",d:"Vara, tramoya, bambalina, pierna, embocadura, ciclorama, hombro, proscenio y foso."},
+  ensayo:{b:4,t:"Ensayo técnico",d:"Se ajustan tiempos, luz y seguridad con todo el equipo."},
+  decis:{b:4,t:"Decisiones externas e internas",d:"Externas: lo que ve el público. Internas: lo que permite trabajar detrás."},
+  consid:{b:4,t:"Consideraciones",d:"Bloqueo, pirotecnia, trampillas, grandes conjuntos y baile."},
+  config:{b:5,t:"Tipos de escenario",d:"Italiana, empuje, arena y no convencional."},
+  rider:{b:4,t:"Rider técnico",d:"Medidas y equipo de cada teatro."},
+  efectos:{b:5,t:"Efectos especiales",d:"Todo efecto pide seguridad."}
+};
+const C_TOTAL=Object.keys(C).length;
+
+/* ================= Escenas ================= */
+const TYPES8=["Realista","Naturalista","Pintada","Romántica","Funcional","Sugerente","Minimalista","Abstracta"];
+const ANAT=["Bambalina","Ciclorama","Embocadura","Foso","Hombro","Pierna","Proscenio","Tramoya","Vara"];
+
+const SC=[
+ {id:"e1",b:1,week:"Semana 0",title:"Antes de abrir el telón",sub:"Qué es (y qué no es) la escenografía.",
+  brief:"<b>El encargo:</b> diseñar la escenografía de la adaptación teatral de <i>El viaje de Chihiro</i> (John Caird y Maoko Imai, Tokio, 2022). Estreno en diez semanas.",
+  learn:["esc","origen","kin","hab","svo","fun"],
+  tasks:[
+   {id:"e1a",type:"match",q:"¿Qué comunica cada elemento?",opts:["Encierro","Aislamiento","Amenaza","Ausencia"],
+    items:[{t:"Muro alto sin ventanas",a:"Encierro"},{t:"Cenital sobre un punto",a:"Aislamiento"},{t:"Una puerta cerrada",a:"Amenaza"},{t:"Una silla rota",a:"Ausencia"}]},
+   {id:"e1b",type:"match",q:"¿Qué función cumple cada decisión?",opts:["Sitúa","Comunica","Resuelve","Transforma"],
+    items:[{t:"Faroles rojos y vapor: una casa de baños japonesa",a:"Sitúa"},{t:"Pueblo vacío de día, inquietante de noche",a:"Comunica"},{t:"Rutas libres para actores y títeres",a:"Resuelve"},{t:"La hierba se convierte en mar",a:"Transforma"}]},
+   {id:"e1c",type:"mc",q:"Según Svoboda, ¿cuándo se juzga una escenografía?",o:["En el boceto","Cuando se abre el telón","En la maqueta"],a:1,e:"Se juzga en vivo, con actores, luz y público."}
+  ],ficha:"Encargo: El viaje de Chihiro"},
+ {id:"e2",b:4,week:"Semana 1",title:"El desglose",sub:"Todo empieza leyendo el guion.",
+  brief:"Chihiro cruza un túnel con sus padres y ellos se convierten en cerdos. Para salvarlos, ella trabaja en la casa de baños de los espíritus.",
+  learn:["desg"],
+  tasks:[
+   {id:"e2a",type:"multi",q:"¿Qué lugares pide la obra?",hint:"Elige cuatro.",o:["Túnel","Castillo","Casa de baños","Playa","Cuarto de calderas","Tren sobre el agua"],a:[0,2,4,5],e:"La obra va del mundo humano al de los espíritus y de regreso."},
+   {id:"e2b",type:"match",q:"¿Qué necesita cada momento?",opts:["Entrada oscura a otro mundo","Puestos con mucha comida","Espacio con calor y vapor","Vagón que flota sobre el agua"],
+    items:[{t:"Cruzar el túnel",a:"Entrada oscura a otro mundo"},{t:"Los padres comen",a:"Puestos con mucha comida"},{t:"Chihiro con Kamaji",a:"Espacio con calor y vapor",e:"El cuarto de calderas."},{t:"El viaje en tren",a:"Vagón que flota sobre el agua"}]}
+  ],ficha:"Desglose: túnel, pueblo, casa de baños y tren"},
+ {id:"e3",b:4,week:"Semana 2",title:"Junta con dirección",sub:"Entender la idea y traducirla.",
+  brief:"El director dice: <b>«Que el público entre con Chihiro a otro mundo»</b>.",
+  learn:["junta","trad"],
+  tasks:[
+   {id:"e3a",type:"mc",q:"¿Qué haces primero?",o:["Presento un diseño completo","Pregunto y llevo referencias","Espero instrucciones"],a:1,e:"El escenógrafo propone, pero después de entender."},
+   {id:"e3b",type:"match",q:"Tradúcelo en tres decisiones.",
+    items:[{t:"Proporción",a:"Casa de baños enorme, niña pequeña",opts:["Todo a escala humana","Casa de baños enorme, niña pequeña","Casa de baños miniatura"]},
+           {t:"Color",a:"Rojo laca y faroles contra noche azul",opts:["Todo blanco","Rojo laca y faroles contra noche azul","Gris oficina"]},
+           {t:"Circulación",a:"Un túnel como única entrada",opts:["Entradas por todos lados","Un túnel como única entrada","Sin entrada visible"]}]}
+  ],ficha:"Concepto: casa de baños enorme y un solo túnel"},
+ {id:"e4",b:4,week:"Semanas 3 y 4",title:"Investigación y paleta",sub:"De la investigación sale la paleta.",
+  brief:"Separa tus imágenes y arma la paleta.",
+  learn:["idoc","iemo","paleta"],
+  tasks:[
+   {id:"e4a",type:"match",q:"¿Documental o emocional?",opts:["Documental","Emocional"],
+    items:[{t:"Fotos de casas de baños japonesas",a:"Documental"},{t:"Una niña frente a una puerta gigante",a:"Emocional"},{t:"Fotos del montaje de Jon Bausor",a:"Documental",e:"Ver otros montajes sirve, pero si solo partes de ahí, copias."},{t:"Un nombre que se borra",a:"Emocional",e:"El nombre que le quitan a Chihiro."}]},
+   {id:"e4b",type:"match",q:"¿Qué razón tiene cada color?",opts:["Mundo de los espíritus","Agua y misterio","Oro que tienta","Mundo humano"],
+    items:[{t:"Rojo laca",sw:"#b8322a",a:"Mundo de los espíritus"},{t:"Azul noche",sw:"#15284a",a:"Agua y misterio"},{t:"Dorado",sw:"#f2b84b",a:"Oro que tienta"},{t:"Verde hierba",sw:"#5f8f4e",a:"Mundo humano"}]}
+  ],ficha:"Paleta: rojo laca, azul noche, dorado y verde"},
+ {id:"e5",b:2,week:"Semana 4",title:"Tipos de escenografía",sub:"De imitar un lugar a transmitir una idea.",
+  brief:"Nombra el tipo de cada propuesta.",
+  learn:["t_real","t_nat","t_pint","t_rom","t_fun","t_sug","t_min","t_abs"],spectrum:true,
+  tasks:[
+   {id:"e5a",type:"match",q:"¿Qué tipo es?",opts:TYPES8,
+    items:[{t:"Tinas, toallas, cubetas y faroles",a:"Realista"},{t:"Telas azules y círculos de luz",a:"Abstracta"},{t:"Solo un farol bajo un cenital",a:"Sugerente"},{t:"Andamios a varios niveles",a:"Funcional"},{t:"Telón con el pueblo pintado",a:"Pintada"},{t:"Solo una banca",a:"Minimalista",e:"Sugerente: un objeto con sentido. Minimalista: lo mínimo."}]}
+  ],ficha:"Acento sugerente: un farol bajo un cenital"},
+ {id:"e6",b:3,week:"Semana 5",title:"Los elementos",sub:"Cinco elementos y la técnica que los sostiene.",
+  brief:"Ordena la lista de compras.",
+  learn:["deco","util","ilum","vest","arte","tecn","bast"],
+  tasks:[
+   {id:"e6a",type:"match",q:"¿Qué elemento es?",opts:["Decorado","Utilería","Iluminación","Vestuario y maquillaje","Arte escénico"],
+    items:[{t:"Pilares de la casa de baños",a:"Decorado"},{t:"Contrato de Chihiro",a:"Utilería"},{t:"Luz de faroles al anochecer",a:"Iluminación"},{t:"Uniforme de trabajo",a:"Vestuario y maquillaje"},{t:"Madera envejecida pintada en un panel",a:"Arte escénico",e:"Trampantojo."}]},
+   {id:"e6b",type:"mc",q:"El contrato colgado, siempre a la vista, representa su nombre robado. ¿Qué utilería es?",o:["Literal","Simbólica","Técnica"],a:1,e:"Representa algo más que su uso."},
+   {id:"e6c",type:"match",q:"¿Qué hace cada pieza?",opts:["Mueve cambios y efectos","Escenografía con ruedas","Crean niveles","Marcos que forman muros"],
+    items:[{t:"Tramoya",a:"Mueve cambios y efectos"},{t:"Carros",a:"Escenografía con ruedas"},{t:"Plataformas",a:"Crean niveles"},{t:"Bastidores",a:"Marcos que forman muros"}]}
+  ],ficha:"Contrato simbólico · puestos sobre carros"},
+ {id:"e7",b:4,week:"Semana 6",title:"Boceto y maqueta",sub:"La maqueta siempre lleva figura humana.",
+  brief:"Escala <b>1:25</b>: divide la medida real (en cm) entre 25.",
+  learn:["boceto","maq"],
+  tasks:[
+   {id:"e7a",type:"num",q:"¿Cuánto mide en la maqueta?",formula:["medida real en cm ÷ 25 = medida en maqueta"],
+    items:[{q:"Puerta de 2 m",a:8,u:"cm",e:"200 ÷ 25 = 8 cm."},{q:"Actriz de 1.55 m",a:6.2,u:"cm",e:"155 ÷ 25 = 6.2 cm."},{q:"Entrada de la casa de baños de 5 m",a:20,u:"cm",e:"500 ÷ 25 = 20 cm."}]}
+  ],ficha:"Maqueta 1:25 con figura humana"},
+ {id:"e8",b:5,week:"Semanas 7 y 8",title:"Presupuesto y planos",sub:"Que quepa en el dinero y llegue al taller.",
+  brief:"<b>Recortan 40% del presupuesto.</b>",
+  learn:["presu","planos"],
+  tasks:[
+   {id:"e8a",type:"mc",q:"¿Qué haces?",o:["Todo a telones negros","Conservo la casa de baños y simplifico lo demás","Que recorten vestuario"],a:1,e:"Se conserva la idea central."},
+   {id:"e8b",type:"match",q:"¿Qué muestra cada plano?",opts:["Elementos fijos","Móviles: en escena y guardados","Corte con todo","Cada elemento de frente"],
+    items:[{t:"Planta básica",a:"Elementos fijos"},{t:"Plano compuesto",a:"Móviles: en escena y guardados"},{t:"Sección",a:"Corte con todo"},{t:"Alzados frontales",a:"Cada elemento de frente"}]}
+  ],ficha:"Recorte: se queda la casa de baños"},
+ {id:"e9",b:5,week:"Semana 9",title:"El teatro por dentro",sub:"El idioma de tramoya.",
+  brief:"Nombra las partes del teatro a la italiana.",
+  learn:["italiana"],
+  tasks:[
+   {id:"e9a",type:"match",svg:true,q:"Nombra cada número.",hint:"Lo punteado no lo ve el público.",opts:ANAT,
+    items:[{t:"1",a:"Vara",e:"Tubo del que cuelgan luces y telones."},{t:"2",a:"Tramoya",e:"Maquinaria que mueve todo."},{t:"3",a:"Bambalina",e:"Tela que oculta el techo."},{t:"4",a:"Pierna",e:"Tela lateral."},{t:"5",a:"Embocadura",e:"El marco del escenario."},{t:"6",a:"Ciclorama",e:"Fondo que se ilumina."},{t:"7",a:"Hombro",e:"Espacio lateral oculto."},{t:"8",a:"Proscenio",e:"Lo más cercano al público."},{t:"9",a:"Foso",e:"Bajo el escenario."}]}
+  ],ficha:"Montaje a la italiana"},
+ {id:"e10",b:4,week:"Semana 10",title:"Ensayo técnico y gira",sub:"El diseño frente a la realidad.",
+  brief:"Ensayo técnico: <b>un cambio tarda 3 minutos</b>; la meta son 40 segundos.",
+  learn:["ensayo","decis","consid","config","rider","efectos"],
+  tasks:[
+   {id:"e10a",type:"mc",q:"¿Qué propones?",o:["Que el público espere","Carros con ruedas y cambio coreografiado","Quitar la escena"],a:1,e:"Se resuelve con tramoya e iluminación."},
+   {id:"e10b",type:"mc",q:"Un espacio detrás para preparar títeres es una decisión…",o:["Externa","Interna","Presupuestal"],a:1,e:"Interna: lo que permite trabajar detrás."},
+   {id:"e10c",type:"match",q:"¿Qué consideración pide?",opts:["Grandes conjuntos","Trampillas","Pirotecnia","Baile"],
+    items:[{t:"Muchos espíritus llegan a la vez",a:"Grandes conjuntos"},{t:"El espíritu del río sale desde abajo",a:"Trampillas"},{t:"Faroles con fuego real",a:"Pirotecnia"},{t:"Coreografía de trabajadores",a:"Baile"}]},
+   {id:"e10d",type:"match",q:"¿Cómo adaptas el diseño de gira?",opts:["Nada alto","Lo alto solo al fondo","Ocultar cambios tras el marco","Cuidar electricidad y aforo"],
+    items:[{t:"Arena",a:"Nada alto"},{t:"Empuje",a:"Lo alto solo al fondo"},{t:"A la italiana",a:"Ocultar cambios tras el marco"},{t:"Casa de baños antigua real (no convencional)",a:"Cuidar electricidad y aforo"}]}
+  ],ficha:"Cambio en 40 s · diseño de gira"}
+];
+SC.forEach(s=>s.tasks.forEach(t=>t.pts=t.type==="mc"||t.type==="multi"?1:t.items.length));
+const TOTAL=SC.reduce((s,e)=>s+e.tasks.reduce((a,t)=>a+t.pts,0),0);
+
+/* ================= Configuración ================= */
+const STORE_KEY = "diez-semanas-chihiro-v2";
+
+/* ================= Estado ================= */
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function fresh(){const ord={};SC.forEach(s=>s.tasks.forEach(t=>{if(t.type==="mc")ord[t.id]=shuffle(t.o.map((_,k)=>k));if(t.type==="match"&&!t.svg)ord[t.id]=shuffle(t.items.map((_,k)=>k));}));
+  return {view:"intro",cur:0,name:"",codigo:"",read:{},T:{},ord,nb:false};}
+function loadSaved(){try{const raw=localStorage.getItem(STORE_KEY);if(!raw)return null;const o=JSON.parse(raw);return (o&&o.T&&o.ord)?Object.assign(fresh(),o,{nb:false,view:"intro"}):null;}catch(e){return null;}}
+function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(S));}catch(e){}}
+let S=(window.claude&&window.claude.hot&&window.claude.hot.data&&window.claude.hot.data.S)||loadSaved()||fresh();
+const RESUMED=!!loadSaved()&&Object.keys(S.T).length>0;
+/* Código de avance: para llevar el progreso a otro dispositivo */
+function exportCode(){const o=Object.assign({},S,{nb:false});return btoa(unescape(encodeURIComponent(JSON.stringify(o))));}
+function importCode(c){try{const o=JSON.parse(decodeURIComponent(escape(atob(c.trim()))));if(!o||!o.T||!o.ord)return false;S=Object.assign(fresh(),o,{nb:false});save();return true;}catch(e){return false;}}
+
+
+try{window.claude&&window.claude.hot&&window.claude.hot.snapshot&&window.claude.hot.snapshot(()=>({S}));}catch(e){}
+
+const T=id=>S.T[id]||(S.T[id]={ans:{},done:false,score:0,res:{}});
+function taskDone(t){return !!(S.T[t.id]&&S.T[t.id].done);}
+function sceneDone(i){return SC[i].tasks.every(taskDone);}
+function sceneScore(i){return SC[i].tasks.reduce((s,t)=>s+(S.T[t.id]?S.T[t.id].score:0),0);}
+function scenePts(i){return SC[i].tasks.reduce((s,t)=>s+t.pts,0);}
+function totalScore(){return SC.reduce((s,_,i)=>s+sceneScore(i),0);}
+function unlocked(){const u=new Set();SC.forEach((s,i)=>{if(sceneDone(i))s.learn.forEach(c=>u.add(c));});return u;}
+function maxOpen(){let i=0;while(i<SC.length&&sceneDone(i))i++;return i;} // primera escena sin terminar
+
+/* ================= Utilidades ================= */
+const app=document.getElementById("app"), ov=document.getElementById("ov");
+function esc(t){return String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function top0(){window.scrollTo(0,0);}
+
+/* ================= Maqueta viva ================= */
+function maqueta(){
+  const d=i=>sceneDone(i);
+  let s=`<svg viewBox="0 0 400 270" role="img" aria-label="Tu maqueta de El viaje de Chihiro">
+  <defs><linearGradient id="cy" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${d(3)?"#0f1d3a":"#2a2f4a"}"/><stop offset="1" stop-color="${d(3)?"#c86a3a":"#5a5670"}"/></linearGradient>
+  <linearGradient id="cone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6cf86" stop-opacity=".55"/><stop offset="1" stop-color="#f6cf86" stop-opacity=".08"/></linearGradient>
+  <radialGradient id="lan"><stop offset="0" stop-color="#ffcf73" stop-opacity=".9"/><stop offset="1" stop-color="#ffcf73" stop-opacity="0"/></radialGradient>
+  <linearGradient id="cu" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--curtain-2)"/><stop offset=".5" stop-color="var(--curtain)"/><stop offset="1" stop-color="var(--curtain-2)"/></linearGradient></defs>
+  <rect width="400" height="270" fill="#0d0c0b"/>
+  <rect x="30" y="20" width="340" height="200" fill="url(#cy)" opacity="${d(8)?1:.55}"/>
+  <polygon points="20,206 380,206 398,250 2,250" fill="${d(3)?"#4f7a42":"var(--wood)"}"/>`;
+  if(d(3)) s+=`<polygon points="2,236 398,236 398,250 2,250" fill="#1d4a7a" opacity=".85"/>`;
+  if(d(1)) s+=`<rect x="34" y="120" width="62" height="92" fill="#8a4a3a"/><path d="M48 212 V168 A17 17 0 0 1 82 168 V212 Z" fill="#0a0808"/>`;
+  if(d(2)){ // casa de baños enorme, puente y una sola entrada
+    s+=`<rect x="170" y="140" width="190" height="66" fill="#8f2620"/>
+    ${[178,214,250,286,322,352].map(x=>`<rect x="${x}" y="140" width="6" height="66" fill="#5e1712"/>`).join("")}
+    <rect x="252" y="146" width="30" height="60" fill="#1a0d0a"/>
+    <polygon points="160,140 370,140 352,122 178,122" fill="#2d3b3a"/>
+    <rect x="186" y="96" width="160" height="26" fill="#a33228"/><polygon points="176,96 356,96 338,80 194,80" fill="#2d3b3a"/>
+    <rect x="212" y="60" width="108" height="20" fill="#a33228"/><polygon points="202,60 330,60 300,40 232,40" fill="#2d3b3a"/>
+    <g fill="#ffd27a" opacity=".85">${[196,224,300,326].map(x=>`<rect x="${x}" y="102" width="12" height="12"/>`).join("")}${[226,252,278,300].map(x=>`<rect x="${x}" y="64" width="9" height="11"/>`).join("")}</g>
+    <path d="M96 206 Q133 178 170 198" fill="none" stroke="#b8322a" stroke-width="6"/><path d="M96 196 Q133 168 170 188" fill="none" stroke="#b8322a" stroke-width="2"/>`;
+  }
+  if(d(3)) s+=`${[[120,180],[146,180],[176,128],[220,128],[312,128],[352,128]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="9" fill="url(#lan)"/><circle cx="${x}" cy="${y}" r="3" fill="#ffcf73"/>`).join("")}`;
+  if(d(4)) s+=`<polygon points="200,6 176,232 224,232" fill="url(#cone)"/><rect x="194" y="214" width="12" height="16" rx="4" fill="#d23a2c"/><rect x="196" y="210" width="8" height="4" fill="#2a1a10"/><circle cx="200" cy="222" r="10" fill="url(#lan)"/>`;
+  if(d(5)) s+=`<rect x="104" y="208" width="54" height="14" fill="#6a4a2a"/><polygon points="100,208 162,208 156,198 106,198" fill="#e8d5b0"/>${[110,122,134,146].map(x=>`<rect x="${x}" y="198" width="6" height="10" fill="#b8322a"/>`).join("")}<circle cx="112" cy="225" r="3.5" fill="#1b1714" stroke="#8b6d4d"/><circle cx="150" cy="225" r="3.5" fill="#1b1714" stroke="#8b6d4d"/>`;
+  if(d(6)){ // figura de 1.55 m frente a la entrada de 5 m
+    s+=`<g fill="#f6efe2"><circle cx="240" cy="188" r="2.6"/><path d="M237.6 191 h4.8 l1.4 7 h-1.6 l-.8 8 h-1.4 l-.6 -6 l-.6 6 h-1.4 l-.8 -8 h-1.6z"/></g>
+    <line x1="290" y1="146" x2="290" y2="206" stroke="var(--accent)" stroke-width="1.5"/><line x1="286" y1="146" x2="294" y2="146" stroke="var(--accent)" stroke-width="1.5"/><line x1="286" y1="206" x2="294" y2="206" stroke="var(--accent)" stroke-width="1.5"/>
+    <text x="296" y="180" font-family="IBM Plex Mono, monospace" font-size="10" fill="#fff">5 m</text>`;
+  }
+  if(d(9)) s+=`<rect x="30" y="200" width="340" height="38" fill="#2a6aa8" opacity=".45"/><g><rect x="262" y="212" width="96" height="20" rx="3" fill="#1a2238"/>${[270,290,310,330].map(x=>`<rect x="${x}" y="216" width="14" height="8" fill="#ffd27a" opacity=".8"/>`).join("")}</g>`;
+  if(d(8)) s+=`<rect x="14" y="8" width="372" height="22" fill="url(#cu)"/><rect x="14" y="8" width="20" height="244" fill="url(#cu)"/><rect x="366" y="8" width="20" height="244" fill="url(#cu)"/>`;
+  s+=`<path d="M0 270 V0 H400 V270 H386 V8 H14 V270 Z" fill="var(--frame)"/><rect x="0" y="250" width="400" height="20" fill="var(--wood-2)"/>`;
+  if(!d(0)) s+=`<text x="200" y="140" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-size="15" fill="#b3a894">Tu maqueta aparecerá aquí</text>`;
+  return s+`</svg>`;
+}
+function modelPanel(){
+  const items=SC.filter((_,i)=>sceneDone(i)).map(s=>`<li>${esc(s.ficha)}</li>`).join("");
+  return `<aside class="model"><h3>Tu maqueta · El viaje de Chihiro</h3><div class="box">${maqueta()}</div>
+  ${items?`<ul class="ficha-tec" aria-label="Ficha técnica">${items}</ul>`:""}</aside>`;
+}
+
+/* ================= Barra superior ================= */
+function topbar(){
+  const mo=maxOpen(), u=unlocked().size;
+  const dots=SC.map((s,i)=>`<button style="--c:${BLOCKS[s.b].c}" class="${sceneDone(i)?"done":""} ${S.view==="scene"&&S.cur===i?"cur":""}" ${i<=mo?"":"disabled"} data-scene="${i}" aria-label="Escena ${i+1}: ${esc(s.title)}"></button>`).join("");
+  return `<div class="topbar"><span class="brand">Diez semanas <span>para el estreno</span></span>
+    <div class="steps">${dots}</div>
+    <div class="tb-right"><span class="score"><b>${totalScore()}</b>/${TOTAL}</span><button class="nb" id="nbopen">Cuaderno ${u}/${C_TOTAL}</button></div></div>`;
+}
+
+/* ================= Intro ================= */
+function viewIntro(){
+  app.innerHTML=`<section class="intro">
+    <div>
+      <span class="eyebrow">DVUE · Diseño de escenografía en el teatro</span>
+      <h1>Diez semanas <span>para el estreno</span></h1>
+      <p class="lead">Una compañía va a montar la adaptación teatral de <i>El viaje de Chihiro</i> y tú diseñas la escenografía. Recorre el proceso del desglose a la gira y aprende los conceptos mientras armas tu maqueta. <b>Duración: unos 45 minutos.</b></p>
+      <ol class="howto">
+        <li><span>01</span><div>En cada escena lees la <b>ficha de conceptos</b>.</div></li>
+        <li><span>02</span><div>Resuelves los <b>retos</b>. Si fallas, te mostramos la respuesta y por qué.</div></li>
+        <li><span>03</span><div>Cada escena terminada suma piezas a tu <b>maqueta</b> y conceptos a tu <b>cuaderno</b>.</div></li>
+      </ol>
+      ${maxOpen()>0?`<p class="brief" style="--c:var(--accent)"><b>Tu avance está guardado.</b> Vas en la escena ${Math.min(maxOpen()+1,SC.length)} de ${SC.length}. Puedes seguir donde te quedaste.</p>`:""}
+      <div class="name"><label for="nm">Tu nombre (aparece en tu boleto del estreno)</label><input id="nm" type="text" autocomplete="name" placeholder="Nombre y apellido" value="${esc(S.name)}"></div>
+      <div class="name" style="margin-top:12px"><label for="cod">Tu código de alumno</label><input id="cod" type="text" inputmode="numeric" placeholder="Ej. 221234567" value="${esc(S.codigo)}"></div>
+      <div class="go" style="flex-direction:column;align-items:flex-start"><div style="display:flex;gap:12px;flex-wrap:wrap"><button class="btn" id="start">${maxOpen()>0?"Continuar":"Empezar el encargo"}</button>${maxOpen()>=SC.length?`<button class="btn ghost" id="toPrem">Ir al estreno</button>`:""}</div>
+        <details style="margin-top:6px;max-width:460px"><summary class="muted" style="cursor:pointer;font-size:15px">¿Vas a cambiar de celular o computadora?</summary>
+          <div style="display:grid;gap:8px;margin-top:10px"><p class="muted" style="font-size:14px">Tu avance se guarda solo en este navegador. Para seguir en otro dispositivo, copia tu código de avance aquí y pégalo allá.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" id="exp" type="button">Copiar mi código de avance</button><button class="btn ghost" id="imp" type="button">Pegar un código</button></div>
+          <div id="xbox" hidden style="display:grid;gap:8px"><textarea id="xcode" rows="3" style="width:100%;background:var(--stage);border:1px solid var(--line);border-radius:8px;padding:8px;color:var(--fg);font-family:var(--f-mono);font-size:12px"></textarea><span id="xmsg" class="muted" style="font-size:14px"></span><button class="btn" id="xload" type="button" hidden>Cargar código</button></div></div>
+        </details></div>
+    </div>
+    ${modelPanel().replace('class="model"','class="model" style="position:static"')}
+  </section>`;
+  const nm=document.getElementById("nm"); nm.oninput=()=>{S.name=nm.value;save();};
+  const cod=document.getElementById("cod"); cod.oninput=()=>{S.codigo=cod.value;save();};
+  const ex=document.getElementById("exp"), im=document.getElementById("imp");
+  if(ex) ex.onclick=()=>{const box=document.getElementById("xbox");box.hidden=false;const ta=document.getElementById("xcode");ta.value=exportCode();ta.select();try{navigator.clipboard.writeText(ta.value).then(()=>{document.getElementById("xmsg").textContent="Código copiado. Pégalo en el otro dispositivo.";}).catch(()=>{});}catch(e){}};
+  if(im) im.onclick=()=>{const box=document.getElementById("xbox");box.hidden=false;const ta=document.getElementById("xcode");ta.value="";ta.focus();document.getElementById("xmsg").textContent="Pega aquí tu código y toca «Cargar código».";document.getElementById("xload").hidden=false;};
+  const xl=document.getElementById("xload"); if(xl) xl.onclick=()=>{const ok=importCode(document.getElementById("xcode").value);if(ok){render();top0();}else document.getElementById("xmsg").textContent="Ese código no es válido. Cópialo completo e inténtalo otra vez.";};
+  document.getElementById("start").onclick=()=>{S.cur=Math.min(maxOpen(),SC.length-1);S.view=maxOpen()>=SC.length?"premiere":"scene";render();top0();};
+  const tp=document.getElementById("toPrem"); if(tp) tp.onclick=()=>{S.view="premiere";render();top0();};
+}
+
+/* ================= Retos ================= */
+function renderTask(t,i){
+  const st=T(t.id), done=st.done;
+  let body="";
+  if(t.type==="mc"){
+    const ord=S.ord[t.id];
+    body=`<div class="opts">${ord.map(k=>{let c="opt";if(done){if(k===t.a)c+=" right";else if(k===st.ans.v)c+=" wrong";}
+      return `<button class="${c}" data-mc="${t.id}" data-k="${k}" ${done?"disabled":""}>${esc(t.o[k])}</button>`;}).join("")}</div>`;
+    if(done) body+=fb(st.score===1,t.e);
+  }
+  else if(t.type==="multi"){
+    const sel=st.ans.sel||[];
+    body=`<div class="chips">${t.o.map((o,k)=>{let c="chipb"+(sel.includes(k)?" sel":"");if(done){if(t.a.includes(k))c+=" right";else if(sel.includes(k))c+=" wrong";}
+      return `<button class="${c}" data-mu="${t.id}" data-k="${k}" ${done?"disabled":""} aria-pressed="${sel.includes(k)}">${esc(o)}</button>`;}).join("")}</div>`;
+    body+= done?fb(st.score===1,t.e):`<div class="row-actions"><span class="counter">${sel.length}/${t.a.length} elegidos</span><button class="btn" data-check="${t.id}" ${sel.length===t.a.length?"":"disabled"}>Comprobar</button></div>`;
+  }
+  else if(t.type==="match"){
+    const ord=S.ord[t.id]||t.items.map((_,k)=>k);
+    const rows=ord.map(k=>{const it=t.items[k], opts=it.opts||t.opts, v=st.ans[k];
+      const cls=done?(v===it.a?"right":"wrong"):"";
+      let ctrl;
+      if(opts.length<=6){ctrl=`<div class="chips">${opts.map(o=>`<button class="chipb ${v===o?"sel":""}" data-ma="${t.id}" data-i="${k}" data-v="${esc(o)}" ${done?"disabled":""} aria-pressed="${v===o}">${esc(o)}</button>`).join("")}</div>`;}
+      else{ctrl=`<select data-ms="${t.id}" data-i="${k}" ${done?"disabled":""} aria-label="${esc(it.t)}"><option value="">Elige…</option>${opts.map(o=>`<option ${v===o?"selected":""}>${esc(o)}</option>`).join("")}</select>`;}
+      const lead=t.svg?`<span class="num-badge">${esc(it.t)}</span>`:(it.sw?`<span class="sw" style="background:${it.sw}"></span>`:"");
+      const label=t.svg?"":esc(it.t);
+      const fix=done?`<div class="fix">${v===it.a?"":`Correcto: <b>${esc(it.a)}</b>. `}${it.e?esc(it.e):""}</div>`:"";
+      return `<div class="mrow ${cls}"><div class="it">${lead}${label}</div>${ctrl}${(done&&(v!==it.a||it.e))?fix:""}</div>`;}).join("");
+    const filled=t.items.filter((_,k)=>st.ans[k]).length;
+    body=(t.svg?`<div class="svgbox">${stageSVG()}</div>`:"")+`<div class="opts" ${t.svg?'style="grid-template-columns:repeat(auto-fill,minmax(210px,1fr))"':""}>${rows}</div>`;
+    body+= done?fb(st.score===t.items.length,`${st.score} de ${t.items.length} correctas.`,true)
+      :`<div class="row-actions"><span class="counter">${filled}/${t.items.length}</span><button class="btn" data-check="${t.id}" ${filled===t.items.length?"":"disabled"}>Comprobar</button></div>`;
+  }
+  else if(t.type==="num"){
+    body=`<div class="formula">${t.formula.map(f=>`<span>${esc(f)}</span>`).join("")}</div>`+t.items.map((it,k)=>{
+      const r=st.res[k]||{}; const solved=r.ok||r.shown;
+      return `<div class="mrow ${r.ok?"right":(r.shown?"wrong":"")}"><div class="it" style="font-weight:400">${k+1}. ${esc(it.q)}</div>
+      <div class="inrow"><input id="n-${t.id}-${k}" inputmode="decimal" value="${esc(r.v||"")}" ${solved?"disabled":""} aria-label="Respuesta ${k+1}"><span class="unit">${it.u}</span>${solved?"":`<button class="btn" data-num="${t.id}" data-i="${k}">Comprobar</button>`}</div>
+      ${r.ok?`<div class="fix"><b>${r.tries===1?"¡Exacto!":"Ahora sí."}</b> ${esc(it.e)}</div>`:r.shown?`<div class="fix">Era <b>${it.a} ${it.u}</b>. ${esc(it.e)}</div>`:r.tries?`<div class="fix" style="color:var(--bad)">Revisa: ¿pasaste los metros a centímetros? Intenta otra vez.</div>`:""}</div>`;}).join("");
+  }
+  return `<div class="task" id="task-${t.id}"><span class="tag">Reto ${i+1} de ${SC[S.cur].tasks.length}</span><p class="q">${esc(t.q)}</p>${t.hint?`<p class="hint">${esc(t.hint)}</p>`:""}${body}</div>`;
+}
+function fb(ok,text,match){return `<div class="fb ${ok?"":"no"}" role="status"><b>${ok?"¡Bien!":match?"Revisa las correcciones.":"No exactamente."}</b>${esc(text)}</div>`;}
+
+/* ================= Escena ================= */
+function viewScene(){
+  const i=S.cur, s=SC[i], c=BLOCKS[s.b].c, read=!!S.read[s.id], done=sceneDone(i);
+  const cards=s.learn.map(id=>`<div class="cc" style="--c:${BLOCKS[C[id].b].c}"><h4>${esc(C[id].t)}</h4><p>${esc(C[id].d)}</p></div>`).join("")+
+    (s.spectrum?`<div class="spectrum"><span>← Imita un lugar</span><span>Transmite una idea →</span></div>`:"");
+  let tasksHtml="";
+  if(read){ for(let k=0;k<s.tasks.length;k++){ tasksHtml+=renderTask(s.tasks[k],k); if(!taskDone(s.tasks[k])) break; } }
+  const next=i+1<SC.length;
+  const unlock=done?`<div class="unlock" style="--c:${c}"><span class="eyebrow" style="color:${c}">Escena completa · ${sceneScore(i)}/${scenePts(i)}</span>
+     <h3>Nuevo en tu cuaderno</h3><div class="chips">${s.learn.map(id=>`<span>${esc(C[id].t)}</span>`).join("")}</div>
+     <div class="row-actions">${next?`<button class="btn" id="nextScene">Siguiente: ${esc(SC[i+1].title)}</button>`:`<button class="btn" id="goPrem">¡Al estreno!</button>`}</div></div>`:"";
+  app.innerHTML=topbar()+`<div class="shop">${modelPanel()}<main style="--c:${c};min-width:0">
+    <header class="scene-head"><span class="eyebrow">Escena ${i+1} · ${esc(s.week)} · ${esc(BLOCKS[s.b].n)}</span><h2>${esc(s.title)}</h2><p>${esc(s.sub)}</p></header>
+    <div class="brief">${s.brief}</div>
+    <div class="sec-label">Ficha de conceptos</div>
+    <div class="cards">${cards}</div>
+    ${read?`<div class="sec-label">Retos</div>${tasksHtml}${unlock}`:`<div class="readbtn"><button class="btn" id="readOk">Ya lo leí: a los retos</button></div>`}
+  </main></div>`;
+  bindScene();
+}
+
+function bindScene(){
+  const s=SC[S.cur];
+  const find=id=>s.tasks.find(t=>t.id===id);
+  const ro=document.getElementById("readOk"); if(ro) ro.onclick=()=>{S.read[s.id]=true;render();const el=document.querySelector(".task");if(el)el.scrollIntoView({block:"start",behavior:"smooth"});};
+  app.querySelectorAll("[data-mc]").forEach(b=>b.onclick=()=>{const t=find(b.dataset.mc),st=T(t.id);st.ans.v=Number(b.dataset.k);st.score=st.ans.v===t.a?1:0;st.done=true;afterTask(t);});
+  app.querySelectorAll("[data-mu]").forEach(b=>b.onclick=()=>{const t=find(b.dataset.mu),st=T(t.id),k=Number(b.dataset.k);st.ans.sel=st.ans.sel||[];const p=st.ans.sel.indexOf(k);if(p>=0)st.ans.sel.splice(p,1);else if(st.ans.sel.length<t.a.length)st.ans.sel.push(k);keep(()=>render(),b);});
+  app.querySelectorAll("[data-ma]").forEach(b=>b.onclick=()=>{const st=T(b.dataset.ma);st.ans[b.dataset.i]=b.dataset.v;keep(()=>render(),b);});
+  app.querySelectorAll("[data-ms]").forEach(sel=>sel.onchange=()=>{const st=T(sel.dataset.ms);st.ans[sel.dataset.i]=sel.value;keep(()=>render(),sel);});
+  app.querySelectorAll("[data-check]").forEach(b=>b.onclick=()=>{const t=find(b.dataset.check),st=T(t.id);
+    if(t.type==="multi"){const sel=(st.ans.sel||[]).slice().sort().join(),a=t.a.slice().sort().join();st.score=sel===a?1:0;}
+    else st.score=t.items.reduce((n,it,k)=>n+(st.ans[k]===it.a?1:0),0);
+    st.done=true;afterTask(t);});
+  app.querySelectorAll("input[id^=n-]").forEach(inp=>{inp.onkeydown=e=>{if(e.key==="Enter"){const b=inp.parentElement.querySelector("[data-num]");if(b)b.click();}};});
+  app.querySelectorAll("[data-num]").forEach(b=>b.onclick=()=>{const t=find(b.dataset.num),st=T(t.id),k=Number(b.dataset.i),it=t.items[k];
+    const inp=document.getElementById(`n-${t.id}-${k}`);const v=parseFloat(String(inp.value).replace(",",".").replace(/[^\d.\-]/g,""));if(isNaN(v))return;
+    const r=st.res[k]||(st.res[k]={tries:0});r.tries++;r.v=inp.value;
+    if(Math.abs(v-it.a)<0.051){r.ok=true;if(r.tries===1)st.score++;}else if(r.tries>=2){r.shown=true;}
+    if(t.items.every((_,j)=>st.res[j]&&(st.res[j].ok||st.res[j].shown))){st.done=true;afterTask(t);return;}
+    keep(()=>render(),b);const nx=document.getElementById(`n-${t.id}-${k+1}`);if(r.ok&&nx)nx.focus({preventScroll:true});});
+  const ns=document.getElementById("nextScene"); if(ns) ns.onclick=()=>{S.cur++;render();top0();};
+  const gp=document.getElementById("goPrem"); if(gp) gp.onclick=()=>{S.view="premiere";render();top0();};
+}
+/* mantiene la posición de scroll al re-renderizar */
+function keep(fn,el){const id=el&&el.closest(".task")?el.closest(".task").id:null;const y=id?document.getElementById(id).getBoundingClientRect().top:0;fn();if(id){const n=document.getElementById(id);if(n)window.scrollBy(0,n.getBoundingClientRect().top-y);}}
+function afterTask(t){
+  const id="task-"+t.id; const y=document.getElementById(id).getBoundingClientRect().top;
+  render();
+  const n=document.getElementById(id); if(n) window.scrollBy(0,n.getBoundingClientRect().top-y);
+}
+
+/* ================= Teatro a la italiana (reto 9) ================= */
+function stageSVG(){
+  const m=(n,x,y)=>`<g><circle cx="${x}" cy="${y}" r="25" fill="var(--accent)" stroke="var(--bg)" stroke-width="3"/><text x="${x}" y="${y+8}" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-weight="700" font-size="24" fill="var(--accent-ink)">${n}</text></g>`;
+  return `<svg viewBox="0 0 800 520" role="img" aria-label="Vista frontal de un teatro a la italiana con nueve partes numeradas">
+  <defs><linearGradient id="cyc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#274565"/><stop offset=".65" stop-color="#6d6b86"/><stop offset="1" stop-color="#d9a25a"/></linearGradient>
+  <linearGradient id="cur" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--curtain-2)"/><stop offset=".5" stop-color="var(--curtain)"/><stop offset="1" stop-color="var(--curtain-2)"/></linearGradient>
+  <linearGradient id="beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3c77a" stop-opacity=".35"/><stop offset="1" stop-color="#f3c77a" stop-opacity="0"/></linearGradient></defs>
+  <rect width="800" height="520" fill="var(--stage)"/>
+  <rect x="22" y="80" width="93" height="300" fill="none" stroke="var(--faint)" stroke-width="2" stroke-dasharray="7 6"/>
+  <rect x="685" y="80" width="93" height="300" fill="none" stroke="var(--faint)" stroke-width="2" stroke-dasharray="7 6"/>
+  <rect x="170" y="80" width="460" height="300" fill="#0d0c0b"/><rect x="215" y="112" width="370" height="250" fill="url(#cyc)"/>
+  <polygon points="275,158 245,360 325,360 295,158" fill="url(#beam)"/><polygon points="515,158 475,360 555,360 535,158" fill="url(#beam)"/>
+  <line x1="222" y1="150" x2="578" y2="150" stroke="#a79e90" stroke-width="6" stroke-linecap="round"/>
+  <g fill="#3b3631" stroke="#a79e90" stroke-width="1.5"><rect x="277" y="152" width="16" height="14" rx="2"/><rect x="347" y="152" width="16" height="14" rx="2"/><rect x="437" y="152" width="16" height="14" rx="2"/><rect x="517" y="152" width="16" height="14" rx="2"/></g>
+  <rect x="170" y="360" width="460" height="40" fill="var(--wood)"/><rect x="360" y="372" width="80" height="10" fill="none" stroke="#c9b08a" stroke-width="2"/>
+  <rect x="170" y="80" width="40" height="300" fill="url(#cur)"/><rect x="210" y="110" width="24" height="270" fill="url(#cur)" opacity=".85"/>
+  <rect x="590" y="80" width="40" height="300" fill="url(#cur)"/><rect x="566" y="110" width="24" height="270" fill="url(#cur)" opacity=".85"/>
+  <rect x="170" y="80" width="460" height="30" fill="url(#cur)"/><rect x="210" y="110" width="380" height="18" fill="var(--curtain-2)"/>
+  <path d="M118 400 V38 H682 V400 H630 V80 H170 V400 Z" fill="var(--frame)" stroke="#c7a36a" stroke-width="2"/>
+  <polygon points="96,400 704,400 672,442 128,442" fill="var(--wood-2)" stroke="#8b6d4d" stroke-width="2"/>
+  <rect x="250" y="450" width="300" height="60" fill="#0b0a09" stroke="var(--faint)" stroke-width="2" stroke-dasharray="7 6"/>
+  <line x1="400" y1="384" x2="400" y2="470" stroke="#c9b08a" stroke-width="2" stroke-dasharray="4 5"/><polygon points="392,462 408,462 400,476" fill="#c9b08a"/>
+  <line x1="690" y1="26" x2="782" y2="26" stroke="#a79e90" stroke-width="5"/>
+  <circle cx="712" cy="34" r="9" fill="none" stroke="#a79e90" stroke-width="3"/><circle cx="758" cy="34" r="9" fill="none" stroke="#a79e90" stroke-width="3"/>
+  <line x1="712" y1="43" x2="712" y2="330" stroke="#c9b08a" stroke-width="2"/><line x1="758" y1="43" x2="758" y2="262" stroke="#c9b08a" stroke-width="2"/>
+  <rect x="746" y="262" width="24" height="58" fill="#5a5148" stroke="#a79e90" stroke-width="2"/><rect x="700" y="330" width="26" height="12" fill="#5a5148" stroke="#a79e90" stroke-width="2"/>
+  ${m(1,400,150)}${m(2,735,200)}${m(3,330,95)}${m(4,190,245)}${m(5,580,59)}${m(6,400,262)}${m(7,68,230)}${m(8,400,422)}${m(9,470,482)}</svg>`;
+}
+
+/* ================= Estreno ================= */
+/* ================= Evidencia descargable (PNG) ================= */
+function svgForImage(svg){
+  const cs=getComputedStyle(document.documentElement);
+  return svg.replace(/var\((--[\w-]+)\)/g,(m,n)=>cs.getPropertyValue(n).trim()||"#000")
+            .replace("<svg ",'<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="810" ');
+}
+function loadImg(src){return new Promise((ok,ko)=>{const im=new Image();im.onload=()=>ok(im);im.onerror=ko;im.src=src;});}
+async function buildEvidence(){
+  try{ if(document.fonts&&document.fonts.ready) await document.fonts.ready; }catch(e){}
+  const W=1080,H=1680,c=document.createElement("canvas");c.width=W;c.height=H;const g=c.getContext("2d");
+  const cs=getComputedStyle(document.documentElement), v=n=>cs.getPropertyValue(n).trim();
+  const DISP='"Big Shoulders Display","Arial Narrow",Impact,sans-serif', BODY='"Atkinson Hyperlegible",Arial,sans-serif', MONO='"IBM Plex Mono",Menlo,monospace';
+  // fondo
+  g.fillStyle=v("--bg");g.fillRect(0,0,W,H);
+  let gr=g.createRadialGradient(W,0,0,W,0,700);gr.addColorStop(0,"rgba(226,90,50,.30)");gr.addColorStop(1,"rgba(226,90,50,0)");g.fillStyle=gr;g.fillRect(0,0,W,H);
+  gr=g.createRadialGradient(0,H,0,0,H,800);gr.addColorStop(0,"rgba(60,170,190,.22)");gr.addColorStop(1,"rgba(60,170,190,0)");g.fillStyle=gr;g.fillRect(0,0,W,H);
+  g.strokeStyle="rgba(150,190,255,.07)";g.lineWidth=1;for(let y=30;y<H;y+=36){g.beginPath();for(let x=0;x<=W;x+=12){const yy=y+Math.sin(x/40)*5;x?g.lineTo(x,yy):g.moveTo(x,yy);}g.stroke();}
+  // encabezado
+  g.fillStyle=v("--accent");g.font=`700 24px ${BODY}`;g.fillText("DVUE · DISEÑO DE ESCENOGRAFÍA EN EL TEATRO",60,82);
+  g.fillStyle=v("--fg");let fs=74;g.font=`800 ${fs}px ${DISP}`;while(g.measureText("DIEZ SEMANAS PARA EL ESTRENO").width>W-120&&fs>30){fs-=2;g.font=`800 ${fs}px ${DISP}`;}g.fillText("DIEZ SEMANAS PARA EL ESTRENO",60,162);
+  g.fillStyle=v("--muted");g.font=`400 30px ${BODY}`;g.fillText("Mi escenografía para El viaje de Chihiro",60,208);
+  const lg=g.createLinearGradient(60,0,W-60,0);["--red","--gold","--teal"].forEach((k,i)=>lg.addColorStop(i/2,v(k)));g.fillStyle=lg;g.fillRect(60,232,W-120,4);
+  // maqueta
+  const im=await loadImg("data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svgForImage(maqueta())));
+  g.drawImage(im,60,262,960,648);
+  // datos del alumno
+  let y=970; const d=new Date();
+  g.fillStyle=v("--fg");g.font=`700 40px ${BODY}`;g.fillText(S.name.trim()||"Sin nombre",60,y);
+  g.fillStyle=v("--muted");g.font=`400 26px ${MONO}`;
+  g.fillText(`Código: ${S.codigo.trim()||"—"}   ·   ${d.toLocaleDateString("es-MX",{day:"numeric",month:"long",year:"numeric"})}`,60,y+42);
+  // tabla de escenas
+  y+=96; g.font=`400 25px ${BODY}`;
+  SC.forEach((s,i)=>{
+    const done=sceneDone(i);
+    g.fillStyle=done?v("--fg"):v("--faint");g.textAlign="left";g.fillText(`${i+1}. ${s.title}${done?"":" (pendiente)"}`,60,y);
+    g.textAlign="right";g.font=`500 25px ${MONO}`;g.fillText(`${sceneScore(i)}/${scenePts(i)}`,W-60,y);g.font=`400 25px ${BODY}`;
+    g.strokeStyle=v("--line");g.beginPath();g.moveTo(60,y+12);g.lineTo(W-60,y+12);g.stroke();y+=40;
+  });
+  g.textAlign="left";y+=14;
+  const t=totalScore();
+  g.fillStyle=v("--accent");g.font=`800 46px ${DISP}`;g.fillText(`TOTAL ${t}/${TOTAL} · ${Math.round(t/TOTAL*100)}%`,60,y+20);
+  g.fillStyle=v("--muted");g.font=`400 26px ${BODY}`;g.fillText(`Conceptos en el cuaderno: ${unlocked().size}/${C_TOTAL}`,60,y+62);
+  if(maxOpen()>=SC.length){g.save();g.font=`800 32px ${DISP}`;const sw=g.measureText("FUNCIÓN COMPLETA").width+40;g.translate(W-60-sw/2,y+150);g.rotate(-0.06);g.strokeStyle=v("--gold");g.lineWidth=4;g.strokeRect(-sw/2,-42,sw,60);g.fillStyle=v("--gold");g.textAlign="center";g.fillText("FUNCIÓN COMPLETA",0,0);g.restore();}
+  g.fillStyle=v("--faint");g.font=`400 20px ${MONO}`;g.fillText(`Generado: ${d.toLocaleString("es-MX")}`,60,H-40);
+  return await new Promise(r=>c.toBlob(r,"image/png"));
+}
+function fileName(){const n=(S.name.trim()||"alumno").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^\w]+/g,"_").replace(/^_|_$/g,"");return `Chihiro_escenografia_${n}${S.codigo.trim()?"_"+S.codigo.trim().replace(/[^\w]/g,""):""}.png`;}
+async function downloadEvidence(btn,msg){
+  btn.disabled=true;msg.textContent="Preparando tu imagen…";
+  try{
+    const blob=await buildEvidence(), name=fileName();
+    let dl=null; try{ if(window.claude&&window.claude.use) dl=await window.claude.use("downloads"); }catch(e){}
+    if(dl){ try{ await dl.save({filename:name,data:blob}); msg.textContent="Listo. Súbela a la tarea."; }catch(e){ msg.textContent=e&&e.code==="declined"?"Descarga cancelada.":"No se pudo descargar aquí. Abre la actividad desde Moodle."; } }
+    else{ const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);msg.textContent=`Se descargó «${name}». Súbela a la tarea.`; }
+  }catch(e){ msg.textContent="No se pudo crear la imagen. Toma captura de pantalla de tu boleto."; }
+  btn.disabled=false;
+}
+
+function viewPremiere(){
+  const d=new Date().toLocaleDateString("es-MX",{day:"numeric",month:"long",year:"numeric"});
+  const t=totalScore(), pct=Math.round(t/TOTAL*100), u=unlocked().size, all=maxOpen()>=SC.length;
+  const rows=SC.map((s,i)=>`<tr><td>${i+1}. ${esc(s.title)}${sceneDone(i)?"":" <em style='color:#a3281f'>(pendiente)</em>"}</td><td>${sceneScore(i)}/${scenePts(i)}</td></tr>`).join("");
+  app.innerHTML=topbar()+`<section class="premiere">
+    <div><span class="eyebrow">Noche de estreno</span><h2 style="font-size:clamp(44px,8vw,80px);text-transform:uppercase;margin-top:6px">Se abre el telón</h2></div>
+    <div class="theatre" id="th">${maqueta()}<div class="cl"></div><div class="cr"></div></div>
+    <blockquote>«La verdadera escenografía es lo que sucede cuando se abre el telón.»<cite>Josef Svoboda</cite></blockquote>
+    <section class="ticket" aria-label="Boleto del estreno">
+      <span class="eyebrow">DVUE · El viaje de Chihiro · Escenografía</span>
+      <h2>Boleto de salida</h2>
+      <div class="who"><b>${esc(S.name.trim()||"Sin nombre")}${S.codigo.trim()?" · "+esc(S.codigo.trim()):""}</b><span>${d}</span></div>
+      <table>${rows}<tr class="total"><td>Total</td><td>${t}/${TOTAL} · ${pct}%</td></tr><tr><td>Conceptos en el cuaderno</td><td>${u}/${C_TOTAL}</td></tr></table>
+      ${all?`<span class="stamp">Función completa</span>`:""}
+    </section>
+    <div class="row-actions" style="justify-content:flex-start">
+      ${S.name.trim()?"":`<span class="muted" style="font-size:15px">Escribe tu nombre en la portada para que aparezca en tu boleto.</span>`}
+      <button class="btn" id="dlEv">Descargar mi evidencia (PNG)</button><button class="btn ghost" id="nb2">Repasar mi cuaderno</button><button class="btn ghost" id="home">Portada</button><button class="btn ghost" id="reset">Empezar de nuevo</button>
+    </div>
+    <p id="rq" class="muted" hidden>¿Seguro? Se borran tus respuestas. <button class="btn ghost" id="resetYes" style="padding:6px 12px">Sí, borrar</button></p>
+    <p class="muted" id="dlMsg" style="font-size:15px" role="status">Descarga tu evidencia y súbela a la tarea. Incluye tu maqueta, tu nombre, tu código y tu puntaje.</p>
+  </section>`;
+  requestAnimationFrame(()=>setTimeout(()=>{const th=document.getElementById("th");if(th)th.classList.add("open");},60));
+  document.getElementById("nb2").onclick=()=>{S.nb=true;renderNB();};
+  document.getElementById("dlEv").onclick=e=>downloadEvidence(e.currentTarget,document.getElementById("dlMsg"));
+  document.getElementById("home").onclick=()=>{S.view="intro";render();top0();};
+  document.getElementById("reset").onclick=()=>{document.getElementById("rq").hidden=false;};
+  document.getElementById("resetYes").onclick=()=>{const n=S.name,c=S.codigo;S=fresh();S.name=n;S.codigo=c;save();render();top0();};
+}
+
+/* ================= Cuaderno ================= */
+function renderNB(){
+  if(!S.nb){ov.innerHTML="";return;}
+  const u=unlocked();
+  const groups=[1,2,3,4,5].map(b=>{const ids=Object.keys(C).filter(id=>C[id].b===b);
+    return `<div class="nb-group" style="--c:${BLOCKS[b].c}"><h3>${esc(BLOCKS[b].n)}</h3><div class="nb-list">${ids.map(id=>u.has(id)?`<div class="nb-item"><b>${esc(C[id].t)}</b>${esc(C[id].d)}</div>`:`<div class="nb-item locked">Por descubrir</div>`).join("")}</div></div>`;}).join("");
+  ov.innerHTML=`<div class="overlay" id="ovbg"><div class="drawer" role="dialog" aria-modal="true" aria-label="Cuaderno del escenógrafo">
+    <header><div><span class="eyebrow">${u.size} de ${C_TOTAL} conceptos</span><h2>Mi cuaderno</h2></div><button class="btn ghost" id="nbclose">Cerrar</button></header>
+    <p class="muted" style="font-size:15px">Los conceptos se agregan al terminar cada escena. Úsalo para estudiar antes del examen.</p>${groups}</div></div>`;
+  document.getElementById("nbclose").onclick=()=>{S.nb=false;renderNB();};
+  document.getElementById("ovbg").onclick=e=>{if(e.target.id==="ovbg"){S.nb=false;renderNB();}};
+  document.getElementById("nbclose").focus();
+}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&S.nb){S.nb=false;renderNB();}});
+
+function render(){
+  save();
+  if(S.view==="intro") viewIntro(); else if(S.view==="premiere") viewPremiere(); else viewScene();
+  const nb=document.getElementById("nbopen"); if(nb) nb.onclick=()=>{S.nb=true;renderNB();};
+  app.querySelectorAll("[data-scene]").forEach(b=>b.onclick=()=>{S.cur=Number(b.dataset.scene);S.view="scene";render();top0();});
+  const br=app.querySelector(".brand"); if(br){br.style.cursor="pointer";br.onclick=()=>{S.view="intro";render();top0();};}
+  renderNB();
+}
+render();
+})();
+</script>
